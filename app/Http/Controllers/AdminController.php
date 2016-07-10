@@ -16,12 +16,24 @@ class AdminController extends Controller
         return view('admin.dashboard');
     }
 
+    public function getSurveyScreen($slug){
+        return $this->showScreen('survey', $slug);
+    }
+
+    public function getParticipantsScreen($slug){
+        return $this->showScreen('participants', $slug);
+    }
+
 
     public function showSeminarScreen($slug){
+        return $this->showScreen('seminar', $slug);
+    }
+
+    private function showScreen($view, $slug){
         $seminar = Seminar::where('slug', e($slug))->first();
 
         if($seminar){
-            return view('admin.seminar', compact('seminar'));
+            return view('admin.'.$view, compact('seminar'));
         }
 
         return abort(404);

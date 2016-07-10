@@ -12,7 +12,6 @@ function baseUrl() {
 function bindErrors(errors, parentElement){
     errors = prepareErrors(errors);
     errors.forEach(function(errorSet){
-        console.log(errorSet);
         $(parentElement).find('[name='+ errorSet.key +']').validationEngine('showPrompt', errorSet.value[0], 'error');
     });
 }
@@ -24,6 +23,44 @@ function prepareErrors(errors){
             'value': value
         }];
     });
+}
+
+function bindValidator(formContainer, submitBtnText, callback){
+    formContainer.validationEngine('attach', {
+
+        onValidationComplete: function(form, status){
+
+            if(status){
+                // validation passed
+                callback(form);
+
+            }else{
+                cancelProcess(formContainer.find('.btn-submit'), submitBtnText);
+            }
+        }
+
+    });
+}
+
+function setProcess(element){
+    $(element).attr('disabled', true);
+    handleProcess(element, '<i class="fa fa-spinner fa-spin"></i>');
+}
+
+function cancelProcess(element, html){
+    $(element).attr('disabled', false);
+    handleProcess(element, html);
+}
+
+
+function handleProcess(element, html){
+    var dimens = {
+        height: $(element).outerHeight(),
+        width: $(element).outerWidth()
+    };
+    $(element).html(html);
+    $(element).outerWidth(dimens.width);
+    $(element).outerHeight(dimens.height);
 }
 
 

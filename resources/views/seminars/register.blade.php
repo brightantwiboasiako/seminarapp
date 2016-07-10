@@ -1,7 +1,7 @@
 @extends('layouts.frontend')
 
 @section('title')
-    {{ e($seminar->title) }} | Register
+    Register | {{ e($seminar->title) }}
 @endsection
 
 @section('css')
@@ -24,8 +24,8 @@
     </script>
     <script type="text/javascript">
         $.backstretch([
-            baseUrl() + "/assets/img/bg/19.jpg",
-            baseUrl() + "/assets/img/bg/18.jpg",
+            baseUrl() + "/assets/img/bg/25.jpg",
+            baseUrl() + "/assets/img/bg/16.jpg",
         ], {
             fade: 1000,
             duration: 7000
@@ -34,48 +34,69 @@
 
     <script>
 
+        var formElement = $('.registration-form');
+
         var vm = new Vue({
            el:  '#reg-block',
             data:{
                 surname: '',
                 first_name: '',
-                gender: '0',
+                gender: '',
                 email: '',
                 phone: '',
-                institution: '0',
-                programme: '0',
-                completion_year: '0',
-                slug: ''
+                institution: '',
+                programme: '',
+                completion_year: '',
+                slug: '',
+                institution_other: '',
+                programme_other: ''
             },
 
             methods: {
                 processRegistration: function(){
-                    this.$http.post(baseUrl() + '/seminar/register', this.$data)
-                            .then(function(response){
-                                data = response.data;
 
-                                vm.handleRegistrationResponse(data);
-                            }, function(response){
-                                $('.error').html(response.body);
-                            });
+                    var model = this;
+
+                    setProcess(formElement.find('.btn-submit'));
+                    bindValidator(formElement, 'Register', function(form){
+                        model.$http.post(baseUrl() + '/seminar/register', model.$data)
+                                .then(function(response){
+                                    data = response.data;
+                                    return model.handleRegistrationResponse(data);
+                                }, function(){
+                                    alert('We could not register you. Please try again!');
+                                });
+                    });
+
+
                 },
 
-                handleRegistrationResponse(data){ console.log(data);
+                handleRegistrationResponse: function(data){
                     if(data.OK){
                         alert('You have been registered successfully. See you around!', 'success', function(){
-                            window.location = baseUrl();
+                            window.location = baseUrl() + '/' + vm.$data.slug;
                         });
                     }else{
                         if(data.reason == 'validation'){
-                            console.log(data.errors);
                             bindErrors(data.errors, $('.registration-form'));
                         }else{
-                            alert('Sorry something went wrong! Please try again.');
+                            alert('Sorry something went wrong! Please try again.', 'danger');
                         }
+
+                        cancelProcess(formElement.find('.btn-submit'),'Register');
                     }
                 }
+            },
+
+            ready: function(){
+                var formElement = $('.registration-form');
+                bindValidator(formElement, 'Register', function(form){
+
+                });
             }
         });
+
+
 
     </script>
 
@@ -87,28 +108,28 @@
             <form class="registration-form" @submit.prevent="processRegistration">
                 <div class="reg-block-header">
                     <h2><a href="{{ url(e($seminar->slug)) }}">{{ e($seminar->title) }}</a></h2>
-                    <p>Already Registered? Click <a class="color-green" href="{{ url(e($seminar->slug).'/survey') }}">here</a> to take a survey.</p>
+                    <p>Already Registered? Get directions <a class="color-green" href="{{ url(e($seminar->slug).'/directions') }}">here</a>.</p>
                 </div>
 
                 <div class="col-md-6">
                     <div class="input-group margin-bottom-20">
                         <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                        <input type="text" class="form-control" v-model="surname" name="surname" placeholder="Surname">
+                        <input type="text" class="form-control validate[required,minSize[2]]" v-model="surname" name="surname" placeholder="Surname">
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="input-group margin-bottom-20">
                         <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                        <input type="text" class="form-control" name="first_name" v-model="first_name" placeholder="First Name">
+                        <input type="text" class="form-control validate[required,minSize[2]]" name="first_name" v-model="first_name" placeholder="First Name">
                     </div>
                 </div>
 
                 <div class="col-md-12">
                     <div class="input-group margin-bottom-20">
                         <span class="input-group-addon"><i class="fa fa-male"></i></span>
-                        <select v-model="gender" class="form-control" name="gender">
-                            <option value="0">Gender</option>
+                        <select v-model="gender" class="form-control validate[required]" name="gender">
+                            <option value="">Gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                         </select>
@@ -118,24 +139,25 @@
                 <div class="col-md-6">
                     <div class="input-group margin-bottom-30">
                         <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-                        <input type="text" class="form-control" name="email" placeholder="Email" v-model="email">
+                        <input type="text" class="form-control validate[required,custom[email]]" name="email" placeholder="Email" v-model="email">
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="input-group margin-bottom-30">
                         <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                        <input type="text" class="form-control" name="phone" placeholder="Phone Number" v-model="phone">
+                        <input type="text" class="form-control validate[required,minSize[10]]" name="phone" placeholder="Phone Number" v-model="phone">
                     </div>
                 </div>
 
                 <hr>
 
                 <div class="col-md-6">
-                    <div class="input-group margin-bottom-20">
+                    <div class="input-group margin-bottom-20 institution">
                         <span class="input-group-addon"><i class="fa fa-institution"></i></span>
-                        <select v-model="institution" class="form-control" name="institution">
-                            <option value="0">Institution</option>
+                        <select v-model="institution" class="form-control validate[required]"
+                                name="institution" v-show="institution != 'other'">
+                            <option value="">Institution</option>
                             <option value="knust">KNUST</option>
                             <option value="ug">UG</option>
                             <option value="ucc">UCC</option>
@@ -144,14 +166,19 @@
                             <option value="uhas">UHAS</option>
                             <option value="other">OTHER</option>
                         </select>
+                        <input type="text" v-model="institution_other"
+                               class="form-control validate[required]" placeholder="Enter your institution"
+                               v-show="institution == 'other'" name="institution_other"/>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="input-group margin-bottom-20">
                         <span class="input-group-addon"><i class="fa fa-book"></i></span>
-                        <select v-model="programme" class="form-control" name="programme">
-                            <option value="0">Programme</option>
+                        <select v-model="programme" class="form-control validate[required]" name="programme"
+                            v-show="programme != 'other'"
+                        >
+                            <option value="">Programme</option>
                             <option value="actuarial">Actuarial Science</option>
                             <option value="mathematics">Mathematics</option>
                             <option value="statistics">Statistics</option>
@@ -162,15 +189,18 @@
                             <option value="social-science">Social Science</option>
                             <option value="other">Other</option>
                         </select>
+                        <input type="text" v-model="programme_other"
+                               class="form-control validate[required]" placeholder="Enter your programme"
+                               v-show="programme == 'other'" name="programme_other"/>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="input-group margin-bottom-20">
                         <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-                        <select v-model="completion_year" class="form-control" name="completion_year">
-                            <option value="0">Year of Completion</option>
-                            @for($i = \Carbon\Carbon::now()->format('Y'); $i > \Carbon\Carbon::now()->format('Y') - 20; $i--)
+                        <select v-model="completion_year" class="form-control validate[required]" name="completion_year">
+                            <option value="">Year of Completion</option>
+                            @for($i = (\Carbon\Carbon::now()->format('Y') + 5); $i > \Carbon\Carbon::now()->format('Y') - 10; $i--)
                                 <option value="{{ e($i) }}">{{ e($i) }}</option>
                             @endfor
                         </select>
@@ -180,7 +210,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <input type="hidden" v-model="slug" value="{{ e($seminar->slug) }}"/>
-                        <button type="submit" class="btn-u btn-block">Register</button>
+                        <button type="submit" class="btn-u btn-block btn-submit">Register</button>
+                        <a href="{{ url(e($seminar->slug)) }}" class="btn btn-block btn-default">
+                            <i class="fa fa-arrow-left"></i> Back to Seminar</a>
                     </div>
                 </div>
             </form>

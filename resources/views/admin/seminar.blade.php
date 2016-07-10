@@ -29,31 +29,7 @@
     <div class="container content profile">
         <div class="row">
             <!--Left Sidebar-->
-            <div class="col-md-3 md-margin-bottom-40">
-                {{--<img class="img-responsive profile-img margin-bottom-20" src="assets/img/team/img32-md.jpg" alt="">--}}
-
-                <ul class="list-group sidebar-nav-v1 margin-bottom-40" id="sidebar-nav-1">
-                    <li class="list-group-item active">
-                        <a href="{{ url('admin/seminar/'.e($seminar->slug)) }}"><i class="fa fa-bar-chart-o"></i> {{ e($seminar->title) }}</a>
-                    </li>
-                    <li class="list-group-item">
-                        <a href=""><i class="fa fa-users"></i> Participants</a>
-                    </li>
-                    <li class="list-group-item">
-                        <a href=""><i class="fa fa-bar-chart"></i> Survey</a>
-                    </li>
-                </ul>
-
-
-                <div class="margin-bottom-50"></div>
-
-                <!--Datepicker-->
-                <form action="#" id="sky-form2" class="sky-form">
-                    <div id="inline-start"></div>
-                </form>
-                <!--End Datepicker-->
-            </div>
-            <!--End Left Sidebar-->
+            @include('includes.admin.left-sidebar')
 
             <!-- Profile Content -->
             <div class="col-md-9">
@@ -64,7 +40,7 @@
                             <div class="service-block-v3 service-block-u">
                                 <i class="icon-users"></i>
                                 <span class="service-heading">Total Participants</span>
-                                <span class="counter">52,147</span>
+                                <span class="counter">{{ e(number_format($seminar->getTotalParticipants())) }}</span>
 
                                 <div class="clearfix margin-bottom-10"></div>
 
@@ -117,7 +93,8 @@
                                         <p><i class="fa fa-clock-o"></i> Time: {{ e((new \Carbon\Carbon($seminar->date))->format('H:i')) }}GMT</p>
                                         <hr>
                                         <ul class="list-inline share-list">
-                                            <li><i class="fa fa-bell"></i>12 Participants</li>
+                                            <li><i class="fa fa-bell"></i>
+                                                {{ e($seminar->getTotalParticipants()) }} {{ str_plural('Participant', $seminar->getTotalParticipants()) }}</li>
                                             <li><i class="fa fa-group"></i>54 Responses</li>
                                         </ul>
                                     </div>

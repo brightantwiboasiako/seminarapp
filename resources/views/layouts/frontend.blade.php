@@ -17,7 +17,7 @@
     <!-- Font Awesome -->
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet"/>
     <link href="{{ asset('css/datetime.min.css') }}" rel="stylesheet"/>
-    <link href="{{ asset('css/alertify-themes/bootstrap.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('css/alertify-themes/default.min.css') }}" rel="stylesheet"/>
     <link href="{{ asset('css/alertify.min.css') }}" rel="stylesheet"/>
 
     <!-- Favicon -->

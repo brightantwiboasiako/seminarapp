@@ -11,7 +11,16 @@
 
     <style>
         .interactive-slider-v2{
-            padding: 140px 0;
+            padding: 80px 0;
+        }
+
+        .interactive-slider-v2 h3{
+            color: #fff !important;
+        }
+
+        div.disabled{
+            cursor: not-allowed;
+            opacity: .7;
         }
     </style>
 
@@ -35,15 +44,17 @@
             StyleSwitcher.initStyleSwitcher();
         });
     </script>
-@endsection
+    @endsection
 
-@section('content')
-    <!-- Interactive Slider v2 -->
+    @section('content')
+            <!-- Interactive Slider v2 -->
     <div class="interactive-slider-v2 img-v4">
         <div class="container">
             <h1>{{ e($seminar->title) }}</h1>
-            <p><i class="fa fa-calendar"></i> Date: {{ e($seminar->date()) }}</p>
-            <p><i class="fa fa-clock-o"></i> Time: {{ e($seminar->time()) }}</p>
+            <hr>
+            <h3><i class="fa fa-map-marker"></i> {{ e($seminar->location()) }}</h3>
+            <p><i class="fa fa-calendar"></i> {{ e($seminar->date()) }}</p>
+            <p><i class="fa fa-clock-o"></i> {{ e($seminar->time()) }}</p>
         </div>
     </div>
     <!-- End Interactive Slider v2 -->
@@ -51,25 +62,49 @@
         <div class="container">
             <!-- Service Box -->
             <div class="row text-center margin-bottom-60">
-                <a href="{{ url(e($seminar->slug).'/register') }}">
-                    <div class="col-md-4 md-margin-bottom-50">
-                        <i class="fa fa-user fa-5x"></i>
-                        <h1 class="title-v3-md margin-bottom-10">Register</h1>
-                        <p>Let us know you are coming so we can get things right and serve you better!</p>
+
+                @if($seminar->registrationClosed())
+                    <div class="disabled" title="Registration is closed for this seminar.">
+                        <div class="col-md-4 md-margin-bottom-50">
+                            <i class="fa fa-user fa-5x"></i>
+                            <h1 class="title-v3-md margin-bottom-10">Register</h1>
+                            <p>Let us know you are coming so we can get things right and serve you better!</p>
+                        </div>
                     </div>
-                </a>
-                <a href="{{ url(e($seminar->slug).'/survey') }}">
-                    <div class="col-md-4 flat-service md-margin-bottom-50">
-                        <i class="fa fa-bar-chart fa-5x"></i>
-                        <h1 class="title-v3-md margin-bottom-10">Take Survey</h1>
-                        <p>Tell us how you think we are doing in meeting your expectations. Only takes minutes!</p>
+                @else
+                    <a href="{{ url(e($seminar->slug).'/register') }}">
+                        <div class="col-md-4 md-margin-bottom-50">
+                            <i class="fa fa-user fa-5x"></i>
+                            <h1 class="title-v3-md margin-bottom-10">Register</h1>
+                            <p>Let us know you are coming so we can get things right and serve you better!</p>
+                        </div>
+                    </a>
+                @endif
+
+
+                @if(!$seminar->started() || $seminar->closed())
+                    <div class="disabled" title="Survey only available during seminar.">
+                        <div class="col-md-4 md-margin-bottom-50">
+                            <i class="fa fa-bar-chart fa-5x"></i>
+                            <h1 class="title-v3-md margin-bottom-10">Take Survey</h1>
+                            <p>Tell us how you think we did in meeting your expectations. Only takes minutes!</p>
+                        </div>
                     </div>
-                </a>
+                @else
+                    <a href="{{ url(e($seminar->slug).'/survey') }}">
+                        <div class="col-md-4 flat-service md-margin-bottom-50">
+                            <i class="fa fa-bar-chart fa-5x"></i>
+                            <h1 class="title-v3-md margin-bottom-10">Take Survey</h1>
+                            <p>Tell us how you think we did in meeting your expectations. Only takes minutes!</p>
+                        </div>
+                    </a>
+                @endif
+
                 <a href="{{ url(e($seminar->slug).'/directions') }}">
                     <div class="col-md-4 flat-service">
                         <i class="fa fa-map-marker fa-5x"></i>
                         <h2 class="title-v3-md margin-bottom-10">Get Directions</h2>
-                        <p>Don't know about {{ e($seminar->location) }}? Let's try showing you on the map!</p>
+                        <p>Don't know where <strong>the venue</strong> is? Let's try showing you on the map!</p>
                     </div>
                 </a>
             </div>
