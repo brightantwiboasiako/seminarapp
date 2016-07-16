@@ -4,10 +4,30 @@
     Login
 @endsection
 
+@section('css')
+    <style>
+        
+        @media(min-width: 735px){
+            .login-box{
+                width: 350px;
+            }
+        }
+
+        .login-box{
+            border: 1px solid red;
+            margin: 25px auto;
+            padding: 35px 25px;
+            border: 1px solid rgba(0,0,0,.2);
+        }
+
+    </style>
+@endsection
+
+
 @section('content')
     <div class="login-box">
         <div class="header">
-            <h2 class="title">Login | <i class="fa fa-lock"></i></h2>
+            <h2 class="title">Admin Login | <i class="fa fa-lock"></i></h2>
         </div>
         <div class="body">
             <form role="form" method="post" action="{{ url('admin/login') }}">

@@ -1,0 +1,81 @@
+" ","Very Good",Good,Average,Poor,"Very Poor"
+SCHOOL_SEARCH_time
+" ",1,0,0,0,0
+SCHOOL_SEARCH_topic_coverage
+" ",0,1,0,0,0
+SCHOOL_SEARCH_presentation_mode
+" ",0,0,1,0,0
+SCHOOL_SEARCH_presenter_clarity
+" ",0,0,0,1,0
+SCHOOL_APPLICATION_time
+" ",0,1,0,0,0
+SCHOOL_APPLICATION_topic_coverage
+" ",0,0,1,0,0
+SCHOOL_APPLICATION_presentation_mode
+" ",0,0,0,1,0
+SCHOOL_APPLICATION_presenter_clarity
+" ",0,0,0,0,1
+VISA_time
+" ",0,1,0,0,0
+VISA_topic_coverage
+" ",0,0,1,0,0
+VISA_presentation_mode
+" ",0,0,0,1,0
+VISA_presenter_clarity
+" ",0,0,0,0,1
+FUNDING_time
+" ",1,0,0,0,0
+FUNDING_topic_coverage
+" ",0,1,0,0,0
+FUNDING_presentation_mode
+" ",0,0,1,0,0
+FUNDING_presenter_clarity
+" ",0,0,0,1,0
+EXAMS_time
+" ",0,0,1,0,0
+EXAMS_topic_coverage
+" ",0,0,0,1,0
+EXAMS_presentation_mode
+" ",0,0,0,0,1
+EXAMS_presenter_clarity
+" ",1,0,0,0,0
+TESTS_time
+" ",0,0,0,1,0
+TESTS_topic_coverage
+" ",0,0,0,0,1
+TESTS_presentation_mode
+" ",1,0,0,0,0
+TESTS_presenter_clarity
+" ",0,1,0,0,0
+IABA_time
+" ",0,0,0,0,1
+IABA_topic_coverage
+" ",1,0,0,0,0
+IABA_presentation_mode
+" ",0,1,0,0,0
+IABA_presenter_clarity
+" ",0,0,1,0,0
+PUBLICITY_registration
+" ",0,1,0,0,0
+PUBLICITY_checkin
+" ",0,0,1,0,0
+PUBLICITY_overall
+" ",0,0,0,1,0
+QANDA_answers
+" ",0,0,1,0,0
+QANDA_duration
+" ",0,0,0,1,0
+QANDA_presentation_mode
+" ",0,0,0,0,1
+OVERALL_publicity
+" ",0,1,0,0,0
+OVERALL_line_up
+" ",0,0,1,0,0
+OVERALL_duration
+" ",0,0,0,1,0
+OVERALL_venue
+" ",0,0,0,0,1
+OVERALL_quality
+" ",1,0,0,0,0
+OVERALL_refreshment
+" ",0,1,0,0,0

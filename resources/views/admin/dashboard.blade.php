@@ -16,7 +16,8 @@
             el: '#seminars',
             data: {
                 seminars: [],
-                newSeminar: {}
+                newSeminar: {},
+                selected: {}
             },
 
             methods: {
@@ -47,6 +48,26 @@
                             });
                 },
 
+                modifySelected: function(){
+                    var infoContainer = $('.processing');
+
+                    pushInfo(infoContainer, '<i class="fa fa-spinner fa-spin"></i>');
+
+                    this.$http.post(baseUrl() + '/admin/seminar/edit', vm.selected)
+                            .then(function(response){
+                                if(!response.data.OK){
+                                    vm.handleErrors(response.data.errors);
+                                    clearInfo(infoContainer);
+                                }else{
+                                    pushInfo(infoContainer,'<i class="fa fa-check"></i> Modified!');
+                                }
+
+                            }, function(errorResponse){
+                                $('.error').html(errorResponse.data);
+                                clearInfo(infoContainer);
+                            });
+                },
+
                 handleErrors(errors){
                     console.log(errors);
                 },
@@ -56,13 +77,23 @@
                 },
 
                 edit: function(seminar){
-
+                    this.selected = seminar;
                 },
 
                 deleteSeminar: function(seminar){
-                    confirm('Are you sure you want to delete ' + seminar.title + '?', function(){
-                        console.log('deleting...');
-                        // @TODO delete seminar
+                    var model = this;
+                    confirm('Are you sure you want to delete ' + seminar.title + '? This action cannot be undone!', function(){
+                        
+                        model.$http.post(baseUrl() + '/admin/seminar/' + seminar.slug + '/delete', {
+                            slug: seminar.slug
+                        }).then(function(response){
+                            alert(seminar.title + ' has been deleted successfully', 'success', function(){
+                                window.location.reload();
+                            });
+                        }, function(response){
+                            alert('Seminar could not be deleted. Please try again.', 'danger');
+                        });
+
                     }, function(){
 
                     });
@@ -100,6 +131,7 @@
                         <i class="fa fa-plus"></i> New Seminar
                     </button>
                     @include('includes.modals.create-seminar')
+                    @include('includes.modals.edit-seminar')
                 </div>
             </div>
         </div>
@@ -122,7 +154,7 @@
                             <td>@{{ seminar.location }}</td>
                             <td>@{{ startsAt(seminar) }}</td>
                             <td>
-                                <button class="btn btn-xs btn-default" title="Edit" @click="edit(seminar)"><i class="fa fa-edit"></i></button>
+                                <button class="btn btn-xs btn-default" data-toggle="modal" data-target="#edit-seminar" title="Edit" @click="edit(seminar)"><i class="fa fa-edit"></i></button>
                                 <button class="btn btn-xs btn-danger" title="Delete" @click="deleteSeminar(seminar)"><i class="fa fa-trash"></i></button>
                             </td>
                         </tr>

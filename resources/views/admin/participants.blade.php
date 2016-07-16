@@ -23,6 +23,11 @@ Participants | {{ e($seminar->title) }}
         .service-block-u{
             background: none !important;
         }
+
+        .show-more{
+            text-align: center;
+            margin: 10px 5px;
+        }
     </style>
 
 @endsection
@@ -39,10 +44,44 @@ Participants | {{ e($seminar->title) }}
                 participants: [],
                 slug: '',
                 search: null,
-                order: 'surname'
+                order: 'surname',
+                limit: 10,
+                totalCheckIns: 0
             },
 
             methods: {
+
+                download: function(){
+                    window.location = baseUrl() + '/admin/seminar/' + this.slug + '/download';
+                },
+
+                showMore: function(){
+                    if(this.limit < this.participants.length){
+                        this.limit += 10;
+                    }
+                },
+
+                showAll: function(){
+                    this.limit = this.participants.length + 1;
+                },
+
+                totalPresent: function(){
+                    var present = this.participants.filter(function(participant){
+                        return participant.in && participant.in == true;
+                    });
+
+                    return present.length;
+                },
+
+                checkedIn: function(participant){
+
+                    if(participant.in && participant.in == true){
+                        return ' <span class="text-success"><i class="fa fa-check-square"></i></span>';
+                    }else{
+                        return ' <span class="text-warning"><i class="fa fa-times-circle"></i></span>';
+                    }
+
+                },
 
                 showGender: function(participant){
                     if(participant.gender === 'male'){
@@ -114,6 +153,7 @@ Participants | {{ e($seminar->title) }}
                             .then(function(response){
                                 model.participants = JSON.parse(response.data);
                                 model.drawGraphs();
+                                model.totalCheckIns = model.totalPresent();
                             }, function(response){
                                 alert(response.body);
                             });
@@ -289,7 +329,12 @@ Participants | {{ e($seminar->title) }}
                     <div class="panel panel-profile">
                         <div class="panel-heading overflow-h">
                             <h2 class="panel-title heading-sm pull-left"><i class="fa fa-users"></i>
-                                Participants <span class="badge">@{{ participants.length }}</span></h2>
+                                Participants <span class="badge">@{{ participants.length }}</span> | </h2>
+                                <h2 class="panel-title heading-sm pull-left"><i class="fa fa-check"></i>
+                                <span class="badge">@{{ totalCheckIns }}</span> Present &nbsp;</h2>
+                                <h2 class="panel-title heading-sm pull-left">
+                                    <button @click="download" type="button" class="btn btn-sm btn-default"><i class="fa fa-download"></i> Download</button>
+                                </h2>
                             <div class="pull-right">
                                 <input type="text" v-model="search" class="form-control" placeholder="Search"/>
                             </div>
@@ -309,7 +354,7 @@ Participants | {{ e($seminar->title) }}
                                         <table class="table table-bordered">
                                             <thead>
                                             <tr>
-                                                <th>#</th>
+                                                <th class="text-center">#</th>
                                                 <th>Name</th>
                                                 <th>Gender</th>
                                                 <th>Email</th>
@@ -320,8 +365,8 @@ Participants | {{ e($seminar->title) }}
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr v-for="(key, participant) in participants | filterBy search | limitBy 10 | orderBy order">
-                                                <td>@{{ key + 1 }}</td>
+                                            <tr v-for="(key, participant) in participants | filterBy search | limitBy limit | orderBy order">
+                                                <td class="text-center">@{{{ (key + 1) + checkedIn(participant) }}}</td>
                                                 <td>@{{ participant.surname + ' ' + participant.first_name }}</td>
                                                 <td>@{{ showGender(participant) }}</td>
                                                 <td>@{{ participant.email }}</td>
@@ -332,6 +377,10 @@ Participants | {{ e($seminar->title) }}
                                             </tr>
                                             </tbody>
                                         </table>
+                                        <div class="show-more" v-show="limit < participants.length">
+                                            <button class="btn btn-success btn-sm" @click="showMore">Show More</button>
+                                            <button class="btn btn-default btn-sm" @click="showAll">Show All</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

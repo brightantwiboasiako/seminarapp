@@ -44,13 +44,6 @@
 
                                 <div class="clearfix margin-bottom-10"></div>
 
-                                <div class="row margin-bottom-20">
-                                    <div class="col-xs-6 service-in">
-                                        <small>Last Week</small>
-                                        <h4 class="counter">1,385</h4>
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
 
@@ -58,16 +51,9 @@
                             <div class="service-block-v3 service-block-blue">
                                 <i class="icon-screen-desktop"></i>
                                 <span class="service-heading">Survey Responses</span>
-                                <span class="counter">324,056</span>
+                                <span class="counter">{{ e(number_format($seminar->getTotalResponses())) }}</span>
 
                                 <div class="clearfix margin-bottom-10"></div>
-
-                                <div class="row margin-bottom-20">
-                                    <div class="col-xs-6 service-in">
-                                        <small>Last Week</small>
-                                        <h4 class="counter">26,904</h4>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div><!--/end row-->
@@ -95,7 +81,7 @@
                                         <ul class="list-inline share-list">
                                             <li><i class="fa fa-bell"></i>
                                                 {{ e($seminar->getTotalParticipants()) }} {{ str_plural('Participant', $seminar->getTotalParticipants()) }}</li>
-                                            <li><i class="fa fa-group"></i>54 Responses</li>
+                                            <li><i class="fa fa-group"></i>{{ e($seminar->getTotalResponses()) }} {{ str_plural('Response', $seminar->getTotalResponses()) }}</li>
                                         </ul>
                                     </div>
                                 </div>

@@ -43,12 +43,16 @@
             data: {
                 responses: [],
                 slug: '',
-                distribution: 'school',
+                distribution: 'school_search',
                 selections: ['Very Good', 'Good', 'Average', 'Poor', 'Very Poor'],
                 data: {}
             },
 
             methods: {
+
+                download: function(){
+                    window.location = baseUrl() + '/admin/seminar/' + this.slug + '/download-survey';
+                },
 
                 fetchSurveyResponses: function(){
                     var model = this;
@@ -79,20 +83,27 @@
                         arr.push(obj[i]);
                     }
 
-                    console.log(arr);
-
                     return arr;
                 },
 
                 plotGraph: function(){
+
+
                     if(this.distribution == 'publicity'){
-                        this.plot(this.toArray(this.data.online), 'online', 'Convenience of online platform');
-                        this.plot(this.toArray(this.data.online), 'publicity', 'Publicity');
-                        this.plot(this.toArray(this.data.online), 'refereshment', 'Refreshments');
+                        this.plot(this.toArray(this.data.registration), 'registration', 'Convenience of online platform');
+                        this.plot(this.toArray(this.data.checkin), 'checkin', 'Convenience of checkin process');
+                        this.plot(this.toArray(this.data.overall), 'overall', 'Overall Convenience of online platform');
                     }else if(this.distribution == 'QandA'){
                         this.plot( this.toArray(this.data.presentation_mode), 'presentation_mode', 'Mode of presentation');
                         this.plot( this.toArray(this.data.answers), 'answers', 'Answers to questions');
                         this.plot( this.toArray(this.data.duration), 'duration', 'Duration');
+                    }else if(this.distribution == 'overall'){
+                        this.plot( this.toArray(this.data.publicity), 'publicity', 'Publicity');
+                        this.plot( this.toArray(this.data.line_up), 'line_up', 'Programme Line Up');
+                        this.plot( this.toArray(this.data.duration), 'duration', 'Duration');
+                        this.plot( this.toArray(this.data.venue), 'venue', 'Venue');
+                        this.plot( this.toArray(this.data.quality), 'quality', 'Session Overall Quality & Value');
+                        this.plot( this.toArray(this.data.refreshment), 'refreshment', 'Refreshments');
                     }else{
                         this.plot(this.toArray(this.data.time), 'time', 'Timely manner of presentation');
                         this.plot( this.toArray(this.data.presentation_mode), 'presentation_mode', 'Mode of presentation');
@@ -178,17 +189,23 @@
                     <!--Service Block v3-->
                     <div class="row margin-bottom-10">
                         <div class="col-sm-12 sm-margin-bottom-20">
-                            <div class="service-block-v3 service-block-u">
-                                <h2>View Survey Distribution</h2>
+                            <div class="service-block-u">
+                                <h2 class="pull-left">
+                                    View Survey Distribution
+                                    <button @click="download" type="button" class="btn btn-xs btn-success"><i class="fa fa-download"></i> Download Data</button>
+                                    <a href="{{ url('admin/seminar/'.e($seminar->slug).'/comments') }}" class="btn btn-xs btn-default" target="_blank"><i class="fa fa-comments"></i>Comments</a>
+                                </h2>
                                 <select class="form-control" @change="drawGraph" v-model="distribution">
-                                    <option value="school">School Search & Applications</option>
+                                    <option value="school_search">School Search</option>
+                                    <option value="school_application">School Applications</option>
                                     <option value="visa">Visa Application Process</option>
                                     <option value="funding">Funding and Scholarships</option>
                                     <option value="exams">SOA, IFoA and CAS Exams</option>
                                     <option value="tests">Standardised Tests</option>
                                     <option value="iaba">IABA- Annual Meeting, Boot Camp and Scholarships</option>
-                                    <option value="publicity">Publicity and Refreshments</option>
+                                    <option value="publicity">Online Platform</option>
                                     <option value="QandA">Questions and Answers</option>
+                                    <option value="overall">Overall Programme</option>
                                 </select>
                             </div>
                         </div>

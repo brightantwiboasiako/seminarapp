@@ -13,7 +13,7 @@
 
     <style>
         .welcome, .completed{
-            margin-top: 15%;
+            margin-top: 10%;
         }
 
         .completed{
@@ -21,16 +21,20 @@
         }
 
         .questions{
-            margin-top: 2%;
+            margin-top: 1%;
         }
 
         .radio{
-            padding: 5px;
+            padding: 2px;
         }
 
         .selected{
             background: #72c02c;
             color: #fff !important;
+        }
+
+        .pager-container{
+          margin-top: -5%;
         }
 
 
@@ -62,10 +66,24 @@
                    "Very Good", "Good", "Average", "Poor", "Very Poor"
                ],
 
+               typeInQuestions: {
+                  again: 'yes'
+               },
+
                categories: [
                    {
-                       id: "school",
-                       title: "School Search & Applications",
+                       id: "school_search",
+                       title: "School Search",
+                       questions: [
+                           { id: "time", q: "Timely manner of presentation", selected: null},
+                           { id: "topic_coverage", q: "Depth of topic covered", selected: null},
+                           { id: "presentation_mode", q: "Mode of presentation", selected: null},
+                           { id: "presenter_clarity", q: "Clarity of presenter", selected: null}
+                       ]
+                   },
+                   {
+                       id: "school_application",
+                       title: "School Applications",
                        questions: [
                            { id: "time", q: "Timely manner of presentation", selected: null},
                            { id: "topic_coverage", q: "Depth of topic covered", selected: null},
@@ -125,11 +143,11 @@
                    },
                    {
                        id: "publicity",
-                       title: "Publicity and Refreshments",
+                       title: "Online Platform",
                        questions: [
-                           { id: "publicity", q: "Publicity", selected: null},
-                           { id: "refreshment", q: "Refreshments", selected: null},
-                           { id: "online", q: "Convenience of online platform", selected: null}
+                           { id: "registration", q: "Online registration", selected: null},
+                           { id: "checkin", q: "Check in process", selected: null},
+                           { id: "overall", q: "Overall convenience", selected: null}
                        ]
                    },
                    {
@@ -139,6 +157,18 @@
                            { id: "answers", q: "Answers to questions", selected: null},
                            { id: "duration", q: "Duration", selected: null},
                            { id: "presentation_mode", q: "Mode of presentation", selected: null}
+                       ]
+                   },
+                   {
+                       id: "overall",
+                       title: "Overall Programme",
+                       questions: [
+                           { id: "publicity", q: "Publicity", selected: null},
+                           { id: "line_up", q: "Programme Line-up", selected: null},
+                           { id: "duration", q: "Duration of the Programme", selected: null},
+                           { id: "venue", q: "Venue of the Programme", selected: null},
+                           { id: "quality", q: "Session Overall Quality & Value", selected: null},
+                           { id: "refreshment", q: "Refreshments", selected: null},
                        ]
                    }
                ],
@@ -159,10 +189,12 @@
                         // submit
 
                         model.$http.post(baseUrl() +'/' + model.slug +  '/survey/response', {
-                            responses: model.categories
+                            responses: model.categories,
+                            type_in: model.typeInQuestions
                         })
                                 .then(function(response){
                                     alert('Your responses have been saved!');
+                                    $('#type-in-modal').modal('hide');
                                 }, function(response){
                                     alert('Your responses could not be saved. Please try again.', 'danger');
                                 });
@@ -191,6 +223,13 @@
                next: function(){
                    if(this.key < this.categories.length - 1){
                        this.key++;
+                   }else if(this.key == this.categories.length - 1){
+                      
+                      $('#type-in-modal').modal('show');
+
+                      this.key++;
+
+                      return;
                    }else{
                         this.last = true;
                    }
@@ -216,6 +255,7 @@
 
 @section('content')
     <div class="container" id="container" v-cloak>
+        @include('includes.modals.survey');
         <input type="hidden" v-model="slug" value="{{ e($seminar->slug) }}"/>
         <div class="col-md-8 col-md-offset-2 welcome  text-center" v-show="!started">
             <div class="headline"><h2>Welcome to the survey</h2></div>

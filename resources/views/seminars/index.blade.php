@@ -82,7 +82,7 @@
                 @endif
 
 
-                @if(!$seminar->started() || $seminar->closed())
+                @if(!$seminar->surveyOpen())
                     <div class="disabled" title="Survey only available during seminar.">
                         <div class="col-md-4 md-margin-bottom-50">
                             <i class="fa fa-bar-chart fa-5x"></i>
@@ -100,13 +100,42 @@
                     </a>
                 @endif
 
-                <a href="{{ url(e($seminar->slug).'/directions') }}">
-                    <div class="col-md-4 flat-service">
-                        <i class="fa fa-map-marker fa-5x"></i>
-                        <h2 class="title-v3-md margin-bottom-10">Get Directions</h2>
-                        <p>Don't know where <strong>the venue</strong> is? Let's try showing you on the map!</p>
+                @if($seminar->closed())
+
+                    @if($seminar->filesDownloadLinkAvailable())
+                        <a href="{{ url(e($seminar->filesUrl())) }}" target="_blank">
+                            <div class="col-md-4 flat-service">
+                                <i class="fa fa-download fa-5x"></i>
+                                <h2 class="title-v3-md margin-bottom-10">Download Seminar Files</h2>
+                                <p>Get all the materials you need here</p>
+                            </div>
+                        </a>
+                    @else
+                        <div class="disabled" title="Files download link not available.">
+                            <div class="col-md-4 flat-service">
+                                <i class="fa fa-download fa-5x"></i>
+                                <h2 class="title-v3-md margin-bottom-10">Download Seminar Files</h2>
+                                <p>Get all the materials you need here</p>
+                            </div>
+                        </div>
+                    @endif
+                @elseif($seminar->ongoing())
+                    <a href="{{ url(e($seminar->slug).'/in') }}">
+                        <div class="col-md-4 flat-service">
+                            <i class="fa fa-check fa-5x"></i>
+                            <h2 class="title-v3-md margin-bottom-10">Check In</h2>
+                            <p>Let us know that you are already around.</p>
+                        </div>
+                    </a>
+                @else
+                    <div class="disabled" title="You can only check in during seminar.">
+                        <div class="col-md-4 flat-service">
+                            <i class="fa fa-check fa-5x"></i>
+                            <h2 class="title-v3-md margin-bottom-10">Check In</h2>
+                            <p>Let us know that you are already around.</p>
+                        </div>
                     </div>
-                </a>
+                @endif    
             </div>
             <!-- End Service Box -->
         </div><!--/container -->

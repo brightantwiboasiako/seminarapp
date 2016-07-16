@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\UnsuccessfulCheckInException;
 use App\Seminar;
 
 use App\Http\Requests;
@@ -15,7 +16,125 @@ class SeminarController extends Controller
     private $registrationErrors;
 
 
+    public function delete($slug){
+        $seminar = $this->getSeminar($slug);
+
+        if($seminar && $seminar->delete()){
+            return response()->json([
+                'OK' => true
+            ]);
+        }else{
+            return response()->json([
+                'OK' => false
+            ]);
+        }
+    }
+
+
+    public function saveFilesUrl(Request $request){
+
+        $slug = e($request->input('slug'));
+        $url = e($request->input('url'));
+
+        $seminar = $this->getSeminar($slug);
+
+        if($seminar){
+            $seminar->update([
+                'files_url' => $url
+            ]);
+
+            return response()->json([
+                'OK' => true
+            ]);
+        }
+
+        return response()->json([
+            'OK' => 'false'
+        ]);
+
+    }
+
+
+    public function downloadParticipants($slug){
+        $seminar = $this->getSeminar($slug);
+
+        $fileName = $slug.'_participants.csv';
+
+        if($seminar){
+
+            $seminar->participantsCsv($fileName);
+
+            return $this->downloadCsv($fileName);
+            
+        }
+
+        abort(404);
+    }
+
+
+    public function downloadSurveyData($slug){
+        $seminar = $this->getSeminar($slug);
+
+        $fileName = $slug.'_survey.csv';
+
+        if($seminar){
+            $seminar->surveyDataCsv($fileName);
+
+            return $this->downloadCsv($fileName);
+        }
+
+        abort(404);
+
+    }
+
+
+    private function downloadCsv($fileName){
+        return response()->download($fileName, $fileName, [
+            'Content-Type' => 'text/csv'
+        ]);
+    }
+
+
+    public function processCheckIn(Request $request, $slug){
+
+        $seminar = $this->getSeminar($slug);
+
+        $response = [
+            'OK' => false
+        ];
+
+        if($seminar){
+
+            try{
+                $seminar->checkIn($request->input('email'));
+                $response['OK'] = true;
+            }catch(UnsuccessfulCheckInException $e){
+                $response['OK'] = false;
+                $response['message'] = $e->getMessage();
+            }
+
+        }
+
+        return response()->json($response);
+
+    }
+
+
+    public function showCheckInScreen($slug){
+
+        $seminar = $this->getSeminar($slug);
+
+        if(!$seminar || !$seminar->started()) return abort(401, 'Seminar Not Started! You cannot check in.');
+
+        return $this->showScreen('checkin', $slug);
+    }
+
     public function showSurveyScreen($slug){
+
+        $seminar = $this->getSeminar($slug);
+
+        if(!$seminar->surveyOpen()) return abort(401, 'Survey not available at this time.');
+
         return $this->showScreen('survey', $slug);
     }
 
@@ -26,7 +145,8 @@ class SeminarController extends Controller
             // save response
             SeminarResponse::create([
                'seminar_id' => $seminar->id,
-                'responses' => json_encode($request->input('responses'), true)
+                'responses' => json_encode($request->input('responses'), true),
+                'type_in_response' => json_encode($request->input('type_in'), true)
             ]);
         }
 

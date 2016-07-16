@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('seminar-2016');
 });
 
 // Api Routes
@@ -30,6 +30,11 @@ Route::group(['middleware' => 'api', 'prefix' => 'api'], function(){
         Route::get('seminar/{slug}/survey', [
             'uses' => 'Api\SeminarController@survey'
         ]);
+
+        Route::get('seminar/{slug}/comments', [
+            'uses' => 'Api\SeminarController@comments'
+        ]);
+
     });
 
 });
@@ -52,6 +57,18 @@ Route::group(['middleware' => 'web'], function(){
 
     Route::get('{slug}/survey', [
         'uses' => 'SeminarController@showSurveyScreen'
+    ]);
+
+    Route::get('{slug}/in', [
+        'uses' => 'SeminarController@showCheckInScreen'
+    ]);
+
+    Route::post('{slug}/in', [
+        'uses' => 'SeminarController@processCheckIn'
+    ]);
+
+    Route::get('{slug}/checkin', [
+        'uses' => 'SeminarController@processCheckIn'
     ]);
 
     Route::post('{slug}/survey/response', [
@@ -78,6 +95,10 @@ Route::group(['prefix' => 'admin'], function(){
             ]);
 
 
+            Route::post('edit', [
+               'uses' => 'AdminController@editSeminar'
+            ]);
+
             Route::get('{slug}', [
                 'uses' => 'AdminController@showSeminarScreen'
             ]);
@@ -90,7 +111,43 @@ Route::group(['prefix' => 'admin'], function(){
                 'uses' => 'AdminController@getSurveyScreen'
             ]);
 
+            Route::get('{slug}/download', [
+                'uses' => 'SeminarController@downloadParticipants'
+            ]);
+
+            Route::get('{slug}/download-survey', [
+                'uses' => 'SeminarController@downloadSurveyData'
+            ]);
+
+            Route::post('{slug}/delete', [
+                'uses' => 'SeminarController@delete'
+            ]);
+
+
+            Route::get('{slug}/comments', [
+                'uses' => 'AdminController@getCommentsScreen'
+            ]);
+
+            Route::get('{slug}/files', [
+                'uses' => 'AdminController@getFilesLinkScreen'
+            ]);
+
+            Route::post('files-url', [
+                'uses' => 'SeminarController@saveFilesUrl'
+            ]);
+
+
         });
+
+
+        // Settings
+        Route::get('settings', [
+           'uses' => 'AdminController@getSettingsScreen'
+        ]);
+
+        Route::post('change-password', [
+           'uses' => 'AdminController@changePassword'
+        ]);
 
 
         // Dashboard

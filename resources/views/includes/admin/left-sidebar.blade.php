@@ -6,10 +6,16 @@
             <a href="{{ url('admin/seminar/'.e($seminar->slug)) }}"><i class="fa fa-tv"></i> {{ e($seminar->title) }}</a>
         </li>
         <li class="list-group-item">
+            <a href="{{ url('admin/dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a>
+        </li>
+        <li class="list-group-item">
             <a href="{{ url('admin/seminar/'.e($seminar->slug).'/participants') }}"><i class="fa fa-users"></i> Participants</a>
         </li>
         <li class="list-group-item">
             <a href="{{ url('admin/seminar/'.e($seminar->slug).'/survey') }}"><i class="fa fa-bar-chart"></i> Survey</a>
+        </li>
+        <li class="list-group-item">
+            <a href="{{ url('admin/seminar/'.e($seminar->slug).'/files') }}"><i class="fa fa-file-zip-o"></i> Files</a>
         </li>
     </ul>
 
