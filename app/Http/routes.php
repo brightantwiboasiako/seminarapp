@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return redirect('seminar-2016');
+    return redirect('seminar-2017');
 });
 
 // Api Routes
