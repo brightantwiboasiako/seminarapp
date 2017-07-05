@@ -197,13 +197,13 @@ class SeminarController extends Controller
                    'OK' => false,
                     'errors' => $this->registrationErrors,
                     'reason' => 'validation'
-                ]);
+                ], 422);
             }
         }else{
             return response()->json([
                 'OK' => false,
                 'reason' => 'technical'
-            ]);
+            ], 500);
         }
 
     }

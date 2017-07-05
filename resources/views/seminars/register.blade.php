@@ -63,8 +63,16 @@
                                 .then(function(response){
                                     data = response.data;
                                     return model.handleRegistrationResponse(data);
-                                }, function(){
-                                    alert('We could not register you. Please try again!');
+                                }, function(response){
+
+                                    cancelProcess(formElement.find('.btn-submit'),'Register');
+
+                                    if(response.status === 422){
+                                        bindErrors(JSON.parse(response.data).errors, $('.registration-form'));
+                                    }else{
+                                        alert('There was a problem while registering you. Please try again.', 'danger');
+                                    }
+
                                 });
                     });
 
@@ -72,19 +80,12 @@
                 },
 
                 handleRegistrationResponse: function(data){
-                    if(data.OK){
-                        alert('You have been registered successfully. See you around!', 'success', function(){
-                            window.location = baseUrl() + '/' + vm.$data.slug;
-                        });
-                    }else{
-                        if(data.reason == 'validation'){
-                            bindErrors(data.errors, $('.registration-form'));
-                        }else{
-                            alert('Sorry something went wrong! Please try again.', 'danger');
-                        }
 
-                        cancelProcess(formElement.find('.btn-submit'),'Register');
-                    }
+                    alert('You have been registered successfully. See you around!', 'success', function(){
+                        window.location = baseUrl() + '/' + vm.$data.slug;
+                    });
+
+                    cancelProcess(formElement.find('.btn-submit'),'Register');
                 }
             },
 

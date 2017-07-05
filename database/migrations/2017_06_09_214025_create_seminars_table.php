@@ -20,7 +20,7 @@ class CreateSeminarsTable extends Migration
             $table->dateTime('registration_deadline');
             $table->dateTime('date');
             $table->string('files_url');
-            $table->string('participants');
+            $table->text('participants');
             $table->rememberToken();
             $table->timestamps();
         });

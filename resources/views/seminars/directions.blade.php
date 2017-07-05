@@ -69,9 +69,14 @@
             var clientLocationContainer = $('#your-location');
             var seminarVenueContainer = $('#venue');
 
+//            var destination = {
+//                lat: 5.569207,
+//                lng: -0.220938
+//            };
+
             var onChangeHandler = function() {
                 calculateAndDisplayRoute(directionsService, directionsDisplay, clientLocationContainer.val(),
-                seminarVenueContainer.val());
+                    seminarVenueContainer.val());
             };
             $('#locate').on('click', onChangeHandler);
 

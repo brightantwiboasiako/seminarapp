@@ -15,8 +15,8 @@ class CreateSeminarResponsesTable extends Migration
         Schema::create('seminar_responses', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('seminar_id');
-            $table->string('participants');
-            $table->string('type_in_response');
+            $table->text('participants');
+            $table->text('type_in_response');
             $table->rememberToken();
             $table->timestamps();
         });
