@@ -43,7 +43,7 @@ class Seminar extends Model
 
 
     public function surveyOpen(){
-        return $this->ongoing();
+        return $this->ongoing() || $this->closed();
     }
 
 
